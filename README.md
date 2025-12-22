@@ -6,6 +6,9 @@ Think: **regex → strings**.
 
 > This library focuses on a generatable subset of regex syntax (no backrefs/lookarounds).
 
+[![Hex.pm](https://img.shields.io/hexpm/v/eel.svg)](https://hex.pm/packages/reg_synth)
+[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/reg_synth)
+
 ## Installation
 
 ```elixir
