@@ -8,6 +8,7 @@ Think: **regex → strings**.
 
 [![Hex.pm](https://img.shields.io/hexpm/v/eel.svg)](https://hex.pm/packages/reg_synth)
 [![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/reg_synth)
+[![License](https://img.shields.io/hexpm/l/twitchy.svg)](LICENSE)
 
 ## Installation
 
