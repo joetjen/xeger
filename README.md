@@ -1,17 +1,21 @@
-# RegSynth
+# Xeger
 
-RegSynth generates strings that match a regex-like pattern.
+Xeger generates strings that match a regex-like pattern.
 
 Think: **regex → strings**.
 
 > This library focuses on a generatable subset of regex syntax (no backrefs/lookarounds).
+
+[![Hex.pm](https://img.shields.io/hexpm/v/xeger.svg)](https://hex.pm/packages/xeger)
+[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/xeger)
+[![License](https://img.shields.io/hexpm/l/xeger.svg)](LICENSE)
 
 ## Installation
 
 ```elixir
 def deps do
   [
-    {:regsynth, "~> 0.1.0"}
+    {:xeger, "~> 0.1.0"}
   ]
 end
 ```
@@ -19,21 +23,38 @@ end
 ## Quick example
 
 ```elixir
-RegSynth.take("a(b|c){2}\\d", 10)
+Xeger.take("a(b|c){2}\\d", 10)
 #=> ["abb0", "abb1", ...]
 
-RegSynth.stream("a*", max_repeat: 3)
-|> Enum.take(10)
-#=> ["", "a", "aa", "aaa", ...]
+Xeger.random("a(b|c){2}\\d")
+#=> "acb5" -- one random match, not the whole set; output varies each call
 
-# Or use the ~G sigil for a more idiomatic API
-~G/a+/s |> Enum.take(5)
-#=> ["a", "aa", "aaa", "aaaa", "aaaaa"]
+Xeger.stream("a*")
+|> Enum.take(10)
+#=> ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa"]
+# unbounded quantifiers are infinite by default -- stream/2 is lazy either way
+
+# Or use the ~X sigil for a more idiomatic API
+~X/a(b|c){2}\d/
+#=> "abc9" -- same as Xeger.random/1; add /c or /s for compile/stream instead
 ```
 
 ## Options
 
-* `:max_repeat` - caps `*`, `+`, `{m,}` (default: `5`)
+* `:max_repeat` - caps `*`, `+`, `{m,}` at this many repeats (default: none -- unbounded)
 * `:alphabet` - codepoints used for `.` and negated classes (default: printable ASCII)
+* `:seed` - makes `Xeger.random/2`'s output reproducible (default: none -- fresh randomness each call)
 
-See `QUICKSTART.md`, `USAGE_GUIDE.md`, and `EXAMPLES.md`.
+## Documentation
+
+* [Tutorial](guides/TUTORIAL.md) - a step-by-step introduction
+* [Reference](guides/REFERENCE.md) - full syntax, options, and API reference
+* [Cheatsheet](guides/CHEATSHEET.md) - quick syntax lookup
+* [Examples](guides/EXAMPLES.md) - worked, realistic patterns
+* [Changelog](CHANGELOG.md)
+
+Full API docs: [hexdocs.pm/xeger](https://hexdocs.pm/xeger).
+
+## License
+
+[MIT](LICENSE)
