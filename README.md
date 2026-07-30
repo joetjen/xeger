@@ -6,9 +6,9 @@ Think: **regex → strings**.
 
 > This library focuses on a generatable subset of regex syntax (no backrefs/lookarounds).
 
-[![Hex.pm](https://img.shields.io/hexpm/v/eel.svg)](https://hex.pm/packages/reg_synth)
-[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/reg_synth)
-[![License](https://img.shields.io/hexpm/l/twitchy.svg)](LICENSE)
+[![Hex.pm](https://img.shields.io/hexpm/v/regsynth.svg)](https://hex.pm/packages/regsynth)
+[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/regsynth)
+[![License](https://img.shields.io/hexpm/l/regsynth.svg)](LICENSE)
 
 ## Installation
 
@@ -40,4 +40,16 @@ RegSynth.stream("a*", max_repeat: 3)
 * `:max_repeat` - caps `*`, `+`, `{m,}` (default: `5`)
 * `:alphabet` - codepoints used for `.` and negated classes (default: printable ASCII)
 
-See `QUICKSTART.md`, `USAGE_GUIDE.md`, and `EXAMPLES.md`.
+## Documentation
+
+* [Tutorial](guides/TUTORIAL.md) - a step-by-step introduction
+* [Reference](guides/REFERENCE.md) - full syntax, options, and API reference
+* [Cheatsheet](guides/CHEATSHEET.md) - quick syntax lookup
+* [Examples](guides/EXAMPLES.md) - worked, realistic patterns
+* [Changelog](CHANGELOG.md)
+
+Full API docs: [hexdocs.pm/regsynth](https://hexdocs.pm/regsynth).
+
+## License
+
+[MIT](LICENSE)

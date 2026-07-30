@@ -1,0 +1,42 @@
+; RegSynth's own pattern syntax (see guides/REFERENCE.md for the
+; user-facing spec). Compiled to lib/reg_synth/grammar.ex by:
+;
+;     mix ichor.gen priv/grammar/regsynth.aether --module RegSynth.Grammar \
+;       --actions RegSynth.Parser.Actions --out lib/reg_synth/grammar.ex
+;
+; Rerun that command after editing this file -- there's no automatic
+; staleness check between the two.
+@grammar "regsynth"
+@root expr
+@noskip
+
+LPAREN          := "("
+RPAREN          := ")"
+LBRACKET        := "["
+RBRACKET        := "]"
+LBRACE          := "{"
+RBRACE          := "}"
+CARET           := "^"
+DASH            := "-"
+STAR            := "*"
+PLUS            := "+"
+QUESTION        := "?"
+PIPE            := "|"
+COMMA           := ","
+DOT             := "."
+SHORTHAND_CLASS := "\\d" | "\\w" | "\\s"
+ESCAPED_CHAR    := "\\" .
+DIGIT           := [0-9]
+LITERAL_CHAR    := !("(" | ")" | "[" | "]" | "{" | "}" | "^" | "-" | "*" | "+" | "?" | "|" | "." | ",") .
+
+expr       := concat (PIPE concat)*
+concat     := piece+
+piece      := atom quant?
+quant      := STAR | PLUS | QUESTION | bound
+bound      := LBRACE min:(DIGIT+) (COMMA max:(DIGIT*))? RBRACE
+atom       := group | char_class | DOT | SHORTHAND_CLASS | ESCAPED_CHAR | CARET | DASH | COMMA | DIGIT | LITERAL_CHAR
+group      := LPAREN RPAREN | LPAREN body:expr RPAREN
+char_class := LBRACKET CARET? class_item+ RBRACKET
+class_item := range | SHORTHAND_CLASS | class_atom
+range      := from:class_atom DASH !RBRACKET to:class_atom
+class_atom := ESCAPED_CHAR | CARET | DASH | COMMA | DIGIT | LITERAL_CHAR

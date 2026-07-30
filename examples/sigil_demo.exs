@@ -38,7 +38,7 @@ IO.puts("")
 
 # Example 6: Using compiled pattern with take
 IO.puts("6. Using take with compiled pattern:")
-pattern = ~G/v[0-9]\\.[0-9]/
+pattern = ~G/v[0-9]\.[0-9]/
 versions = RegSynth.take(pattern, 20)
 IO.inspect(versions, label: "Versions")
 IO.puts("")

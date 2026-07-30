@@ -1,6 +1,10 @@
 defmodule RegSynth.AST do
   @moduledoc """
   Internal AST for RegSynth patterns.
+
+  `RegSynth.Parser.Actions` builds this tree from a parse of
+  `priv/grammar/regsynth.aether`; `RegSynth.Generator` is its only
+  consumer.
   """
 
   @type t ::

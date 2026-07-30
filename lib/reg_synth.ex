@@ -41,7 +41,15 @@ defmodule RegSynth do
   alias RegSynth.{Generator, Parser}
 
   defmodule Pattern do
-    @moduledoc false
+    @moduledoc """
+    A compiled RegSynth pattern, as returned by `RegSynth.compile/2` and
+    `RegSynth.compile!/2`.
+
+    Treat it as an opaque token to pass to `RegSynth.stream/2` or
+    `RegSynth.take/3` -- the compiled AST it carries is meant for this
+    library's own internal use, not for callers to pattern-match on.
+    """
+
     defstruct [:ast, :opts]
 
     @type t :: %__MODULE__{ast: RegSynth.AST.t(), opts: keyword()}
