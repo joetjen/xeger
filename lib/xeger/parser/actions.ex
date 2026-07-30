@@ -1,10 +1,10 @@
-defmodule RegSynth.Parser.Actions do
+defmodule Xeger.Parser.Actions do
   @moduledoc """
-  Turns a parse of `priv/grammar/regsynth.aether` into a `RegSynth.AST.t()`
+  Turns a parse of `priv/grammar/xeger.aether` into a `Xeger.AST.t()`
   directly -- unlike a typical `Ichor.Actions` module (which usually
   builds a `Grammar.IR` tree, an executable-grammar representation),
-  this one targets RegSynth's own much smaller AST straight away, since
-  that's the only thing `RegSynth.Generator` ever consumes.
+  this one targets Xeger's own much smaller AST straight away, since
+  that's the only thing `Xeger.Generator` ever consumes.
 
   Only the rules/tokens that need to become something other than their
   own matched text implement a callback here; everything else falls
@@ -51,7 +51,7 @@ defmodule RegSynth.Parser.Actions do
   # ---- rules -----------------------------------------------------------
 
   # `atom`'s `group`/`char_class`/DOT/SHORTHAND_CLASS alternatives are
-  # already `RegSynth.AST.t()` nodes by the time they get here (built
+  # already `Xeger.AST.t()` nodes by the time they get here (built
   # above, or by `group`/`char_class` themselves, below) -- only the
   # plain-character alternatives still need wrapping in `{:lit, _}`.
   # Anything else falls through to `Ichor.Actions`' single-capture

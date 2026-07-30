@@ -1,21 +1,21 @@
-defmodule RegSynth.MixProject do
+defmodule Xeger.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @source_url "https://github.com/joetjen/reifex"
+  @source_url "https://github.com/joetjen/xeger"
 
   def project do
     [
-      app: :regsynth,
+      app: :xeger,
       version: @version,
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: "RegSynth - generate strings that match a regex-like pattern (regex → strings).",
+      description: "Xeger - generate strings that match a regex-like pattern (regex → strings).",
       package: package(),
 
       # Docs
-      name: "RegSynth",
+      name: "Xeger",
       source_url: @source_url,
       homepage_url: @source_url,
       docs: docs(),
@@ -59,8 +59,8 @@ defmodule RegSynth.MixProject do
       {:ex_doc, "~> 0.40", only: [:dev], runtime: false},
       # ExDoc is invoked via `MIX_ENV=dev mix docs`
 
-      # `mix ichor.gen` compiles priv/grammar/regsynth.aether to
-      # lib/reg_synth/grammar.ex ahead of time (see that file's own
+      # `mix ichor.gen` compiles priv/grammar/xeger.aether to
+      # lib/xeger/grammar.ex ahead of time (see that file's own
       # banner comment to regenerate it). Only the generator needs to be
       # a dev dependency -- the checked-in generated module only calls
       # into the much smaller ichor_runtime below.
@@ -68,7 +68,7 @@ defmodule RegSynth.MixProject do
 
       # === RUNTIME ===
       # The support library the ichor.gen-generated parser
-      # (lib/reg_synth/grammar.ex) actually calls at runtime.
+      # (lib/xeger/grammar.ex) actually calls at runtime.
       {:ichor_runtime, "~> 0.1.0"}
     ]
   end
@@ -122,13 +122,13 @@ defmodule RegSynth.MixProject do
         Guides: ["guides/REFERENCE.md", "guides/CHEATSHEET.md", "guides/EXAMPLES.md"]
       ],
       groups_for_modules: [
-        "Core API": [RegSynth, RegSynth.Pattern],
+        "Core API": [Xeger, Xeger.Pattern],
         Internal: [
-          RegSynth.AST,
-          RegSynth.Parser,
-          RegSynth.Parser.Actions,
-          RegSynth.Grammar,
-          RegSynth.Generator
+          Xeger.AST,
+          Xeger.Parser,
+          Xeger.Parser.Actions,
+          Xeger.Grammar,
+          Xeger.Generator
         ]
       ],
       source_ref: "v#{@version}",

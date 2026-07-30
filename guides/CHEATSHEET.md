@@ -49,13 +49,13 @@ plain literal characters everywhere else.
 ## API quick reference
 
 ```elixir
-RegSynth.compile(pattern, opts \\ [])    #=> {:ok, pattern} | {:error, msg}
-RegSynth.compile!(pattern, opts \\ [])   #=> pattern | raises ArgumentError
-RegSynth.stream(pattern_or_compiled, opts \\ [])  #=> Enumerable.t()
-RegSynth.take(pattern_or_compiled, n, opts \\ []) #=> [binary()]
-RegSynth.matches?(pattern, string)       #=> boolean()
+Xeger.compile(pattern, opts \\ [])    #=> {:ok, pattern} | {:error, msg}
+Xeger.compile!(pattern, opts \\ [])   #=> pattern | raises ArgumentError
+Xeger.stream(pattern_or_compiled, opts \\ [])  #=> Enumerable.t()
+Xeger.take(pattern_or_compiled, n, opts \\ []) #=> [binary()]
+Xeger.matches?(pattern, string)       #=> boolean()
 
-# ~G sigil (import RegSynth, only: [sigil_G: 2])
+# ~G sigil (import Xeger, only: [sigil_G: 2])
 ~G/pattern/     # compile (default)
 ~G/pattern/c    # compile (explicit)
 ~G/pattern/s    # stream

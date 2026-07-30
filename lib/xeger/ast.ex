@@ -1,9 +1,9 @@
-defmodule RegSynth.AST do
+defmodule Xeger.AST do
   @moduledoc """
-  Internal AST for RegSynth patterns.
+  Internal AST for Xeger patterns.
 
-  `RegSynth.Parser.Actions` builds this tree from a parse of
-  `priv/grammar/regsynth.aether`; `RegSynth.Generator` is its only
+  `Xeger.Parser.Actions` builds this tree from a parse of
+  `priv/grammar/xeger.aether`; `Xeger.Generator` is its only
   consumer.
   """
 

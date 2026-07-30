@@ -1,10 +1,10 @@
 # Reference
 
-The complete syntax, options, and API reference for RegSynth.
+The complete syntax, options, and API reference for Xeger.
 
 ## Scope
 
-RegSynth supports a **generatable subset** of regex syntax: everything that
+Xeger supports a **generatable subset** of regex syntax: everything that
 can be turned into a finite (or capped-infinite) list of matching strings.
 It deliberately does **not** support:
 
@@ -15,7 +15,7 @@ It deliberately does **not** support:
   "generate a string."
 * Anchors (`^`, `$`) -- every generated string already matches the whole
   pattern, start to end; anchors are meaningless in a generator context. (A
-  bare `^`/`-`/`,` in a pattern is a **literal** character in RegSynth, not
+  bare `^`/`-`/`,` in a pattern is a **literal** character in Xeger, not
   an anchor or operator -- see [Characters that don't need escaping](#characters-that-dont-need-escaping).)
 * Named/unnamed capture groups (`(?<name>...)`) -- there's nothing to
   capture when generating; `(...)` is grouping only.
@@ -27,7 +27,7 @@ It deliberately does **not** support:
 Any character not listed under [Escaping](#escaping) matches itself:
 
 ```elixir
-RegSynth.take("hello", 5)      #=> ["hello"]
+Xeger.take("hello", 5)      #=> ["hello"]
 ```
 
 ### Escaping
@@ -35,11 +35,11 @@ RegSynth.take("hello", 5)      #=> ["hello"]
 Backslash-escape a character to match it literally when it would otherwise
 be read as an operator: `\(`, `\)`, `\[`, `\]`, `\{`, `\}`, `\|`, `\*`,
 `\+`, `\?`, `\.`. Any other escaped character (`\x`) is simply that
-character, literally -- RegSynth does **not** interpret `\n`, `\r`, `\t` as
+character, literally -- Xeger does **not** interpret `\n`, `\r`, `\t` as
 control characters; `\n` matches a literal `n`.
 
 ```elixir
-RegSynth.take("\\(a\\)", 5)    #=> ["(a)"]
+Xeger.take("\\(a\\)", 5)    #=> ["(a)"]
 ```
 
 ### Characters that don't need escaping
@@ -50,7 +50,7 @@ specific contexts (a leading `^` inside `[...]`, a mid-class `-`, and the
 separator comma inside `{m,n}`):
 
 ```elixir
-RegSynth.take("a-b,c^d", 5)    #=> ["a-b,c^d"]
+Xeger.take("a-b,c^d", 5)    #=> ["a-b,c^d"]
 ```
 
 ### Dot
@@ -59,8 +59,8 @@ RegSynth.take("a-b,c^d", 5)    #=> ["a-b,c^d"]
 printable ASCII, `32..126`):
 
 ```elixir
-RegSynth.take(".", 3)                          #=> [" ", "!", "\""]
-RegSynth.take(".", 3, alphabet: ?a..?c)         #=> ["a", "b", "c"]
+Xeger.take(".", 3)                          #=> [" ", "!", "\""]
+Xeger.take(".", 3, alphabet: ?a..?c)         #=> ["a", "b", "c"]
 ```
 
 ### Alternation
@@ -68,7 +68,7 @@ RegSynth.take(".", 3, alphabet: ?a..?c)         #=> ["a", "b", "c"]
 `a|b|c` matches any one of its alternatives:
 
 ```elixir
-RegSynth.take("cat|dog", 5)    #=> ["cat", "dog"]
+Xeger.take("cat|dog", 5)    #=> ["cat", "dog"]
 ```
 
 ### Grouping
@@ -78,8 +78,8 @@ character, or to nest alternation. An empty group `()` matches the empty
 string:
 
 ```elixir
-RegSynth.take("(ab|c){2}", 20) |> Enum.take(3)  #=> ["abab", "abc", "cab"]
-RegSynth.take("()", 5)                          #=> [""]
+Xeger.take("(ab|c){2}", 4)  #=> ["cc", "cab", "abc", "abab"]
+Xeger.take("()", 5)         #=> [""]
 ```
 
 ### Character classes
@@ -89,10 +89,10 @@ RegSynth.take("()", 5)                          #=> [""]
 mix literal characters, ranges (`a-z`), and shorthands (`\d`, `\w`, `\s`):
 
 ```elixir
-RegSynth.take("[abc]", 5)      #=> ["a", "b", "c"]
-RegSynth.take("[a-z]", 3)      #=> ["a", "b", "c"]
-RegSynth.take("[^0-9]", 3, alphabet: [?0, ?1, ?a, ?b])  #=> ["a", "b"]
-RegSynth.take("[\\d_]", 3)     #=> ["0", "1", "2"]
+Xeger.take("[abc]", 5)      #=> ["a", "b", "c"]
+Xeger.take("[a-z]", 3)      #=> ["a", "b", "c"]
+Xeger.take("[^0-9]", 3, alphabet: [?0, ?1, ?a, ?b])  #=> ["a", "b"]
+Xeger.take("[\\d_]", 3)     #=> ["0", "1", "2"]
 ```
 
 A `-` that's the first or last character in the class (or right before the
@@ -120,7 +120,7 @@ Usable standalone or inside a character class (`[\d_]`).
 | `a{m,}` | `m` or more (capped by `:max_repeat`) |
 | `a{m,n}` | between `m` and `n`, inclusive |
 
-`m`/`n` must be non-negative integers, and `n >= m` -- `RegSynth.compile/2`
+`m`/`n` must be non-negative integers, and `n >= m` -- `Xeger.compile/2`
 returns `{:error, message}` for a pattern like `a{3,2}`.
 
 ## Options
@@ -139,12 +139,12 @@ with whatever's passed at each call):
 
 | Function | Returns | Notes |
 | --- | --- | --- |
-| `RegSynth.compile(pattern, opts \\ [])` | `{:ok, %RegSynth.Pattern{}} \| {:error, binary()}` | Parses once; reuse the result across many `stream/take` calls. |
-| `RegSynth.compile!(pattern, opts \\ [])` | `%RegSynth.Pattern{}` | Same, raises `ArgumentError` on an invalid pattern. |
-| `RegSynth.stream(pattern_or_compiled, opts \\ [])` | `Enumerable.t()` | Lazy; accepts either a binary pattern or a compiled `Pattern`. |
-| `RegSynth.take(pattern_or_compiled, n, opts \\ [])` | `[binary()]` | `stream/2 \|> Enum.take(n)`. |
-| `RegSynth.matches?(pattern, string)` | `boolean()` | Wraps Elixir's own `Regex`; `false` (not an exception) on an invalid pattern. |
-| `RegSynth.sigil_G(pattern, modifiers)` | `%RegSynth.Pattern{}` (no modifier or `c`) or `Enumerable.t()` (`s`) | The `~G/pattern/[cs]` sigil. |
+| `Xeger.compile(pattern, opts \\ [])` | `{:ok, %Xeger.Pattern{}} \| {:error, binary()}` | Parses once; reuse the result across many `stream/take` calls. |
+| `Xeger.compile!(pattern, opts \\ [])` | `%Xeger.Pattern{}` | Same, raises `ArgumentError` on an invalid pattern. |
+| `Xeger.stream(pattern_or_compiled, opts \\ [])` | `Enumerable.t()` | Lazy; accepts either a binary pattern or a compiled `Pattern`. |
+| `Xeger.take(pattern_or_compiled, n, opts \\ [])` | `[binary()]` | `stream/2 \|> Enum.take(n)`. |
+| `Xeger.matches?(pattern, string)` | `boolean()` | Wraps Elixir's own `Regex`; `false` (not an exception) on an invalid pattern. |
+| `Xeger.sigil_G(pattern, modifiers)` | `%Xeger.Pattern{}` (no modifier or `c`) or `Enumerable.t()` (`s`) | The `~G/pattern/[cs]` sigil. |
 
 ## Ordering
 
@@ -167,10 +167,10 @@ but not necessarily lexicographic, order.
 
 ## How parsing works internally
 
-`RegSynth.Parser.parse/1` is a thin adapter over a parser module generated
+`Xeger.Parser.parse/1` is a thin adapter over a parser module generated
 ahead-of-time (via `mix ichor.gen`, from
 [Ichor](https://hex.pm/packages/ichor)) from the declarative PEG grammar at
-`priv/grammar/regsynth.aether`. `RegSynth.Parser.Actions` builds this
-library's own `RegSynth.AST.t()` tree directly from that grammar's parse
+`priv/grammar/xeger.aether`. `Xeger.Parser.Actions` builds this
+library's own `Xeger.AST.t()` tree directly from that grammar's parse
 tree. None of this is public API -- see the moduledocs on those three
 modules if you're modifying the grammar itself.

@@ -1,12 +1,12 @@
-; RegSynth's own pattern syntax (see guides/REFERENCE.md for the
-; user-facing spec). Compiled to lib/reg_synth/grammar.ex by:
+; Xeger's own pattern syntax (see guides/REFERENCE.md for the
+; user-facing spec). Compiled to lib/xeger/grammar.ex by:
 ;
-;     mix ichor.gen priv/grammar/regsynth.aether --module RegSynth.Grammar \
-;       --actions RegSynth.Parser.Actions --out lib/reg_synth/grammar.ex
+;     mix ichor.gen priv/grammar/xeger.aether --module Xeger.Grammar \
+;       --actions Xeger.Parser.Actions --out lib/xeger/grammar.ex
 ;
 ; Rerun that command after editing this file -- there's no automatic
 ; staleness check between the two.
-@grammar "regsynth"
+@grammar "xeger"
 @root expr
 @noskip
 

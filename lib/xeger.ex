@@ -1,6 +1,6 @@
-defmodule RegSynth do
+defmodule Xeger do
   @moduledoc """
-  RegSynth turns a *regex-like* pattern into a stream of strings that match it.
+  Xeger turns a *regex-like* pattern into a stream of strings that match it.
 
   This library is intentionally focused on a **generatable subset** of regular expressions.
   In particular, it does **not** support lookarounds or backreferences.
@@ -30,29 +30,29 @@ defmodule RegSynth do
 
   ## Examples
 
-      iex> RegSynth.take("a(b|c){2}\\d", 6)
+      iex> Xeger.take("a(b|c){2}\\d", 6)
       ["abb0", "abb1", "abb2", "abb3", "abb4", "abb5"]
 
-      iex> RegSynth.take("a*", 6, max_repeat: 5)
+      iex> Xeger.take("a*", 6, max_repeat: 5)
       ["", "a", "aa", "aaa", "aaaa", "aaaaa"]
 
   """
 
-  alias RegSynth.{Generator, Parser}
+  alias Xeger.{Generator, Parser}
 
   defmodule Pattern do
     @moduledoc """
-    A compiled RegSynth pattern, as returned by `RegSynth.compile/2` and
-    `RegSynth.compile!/2`.
+    A compiled Xeger pattern, as returned by `Xeger.compile/2` and
+    `Xeger.compile!/2`.
 
-    Treat it as an opaque token to pass to `RegSynth.stream/2` or
-    `RegSynth.take/3` -- the compiled AST it carries is meant for this
+    Treat it as an opaque token to pass to `Xeger.stream/2` or
+    `Xeger.take/3` -- the compiled AST it carries is meant for this
     library's own internal use, not for callers to pattern-match on.
     """
 
     defstruct [:ast, :opts]
 
-    @type t :: %__MODULE__{ast: RegSynth.AST.t(), opts: keyword()}
+    @type t :: %__MODULE__{ast: Xeger.AST.t(), opts: keyword()}
   end
 
   @type option ::
@@ -60,7 +60,7 @@ defmodule RegSynth do
           | {:alphabet, [non_neg_integer()]}
 
   @doc """
-  Compile a pattern into a `%RegSynth.Pattern{}`.
+  Compile a pattern into a `%Xeger.Pattern{}`.
 
   Returns `{:ok, pattern}` or `{:error, message}`.
   """
@@ -72,7 +72,7 @@ defmodule RegSynth do
   end
 
   @doc """
-  Compile a pattern into a `%RegSynth.Pattern{}` or raise.
+  Compile a pattern into a `%Xeger.Pattern{}` or raise.
   """
   @spec compile!(binary(), [option()]) :: Pattern.t()
   def compile!(pattern, opts \\ []) do
@@ -128,9 +128,9 @@ defmodule RegSynth do
   end
 
   @doc ~S"""
-  Custom sigil for creating RegSynth patterns.
+  Custom sigil for creating Xeger patterns.
 
-  The `~G` sigil (for "generate") provides a convenient way to create compiled RegSynth patterns.
+  The `~G` sigil (for "generate") provides a convenient way to create compiled Xeger patterns.
 
   ## Modifiers
 
@@ -142,13 +142,13 @@ defmodule RegSynth do
   ## Examples
 
       iex> ~G/a+/
-      %RegSynth.Pattern{ast: {:rep, {:lit, "a"}, 1, :infty}, opts: []}
+      %Xeger.Pattern{ast: {:rep, {:lit, "a"}, 1, :infty}, opts: []}
 
       iex> ~G/a+/s |> Enum.take(3)
       ["a", "aa", "aaa"]
 
       iex> pattern = ~G/[0-9]{3}/c
-      iex> RegSynth.take(pattern, 5)
+      iex> Xeger.take(pattern, 5)
       ["000", "001", "002", "003", "004"]
 
   """

@@ -2,9 +2,9 @@
 
 # Demo script showing the new ~G sigil in action
 
-import RegSynth, only: [sigil_G: 2]
+import Xeger, only: [sigil_G: 2]
 
-IO.puts("=== RegSynth ~G Sigil Demo ===\n")
+IO.puts("=== Xeger ~G Sigil Demo ===\n")
 
 # Example 1: Simple pattern compilation
 IO.puts("1. Compile a simple pattern:")
@@ -39,7 +39,7 @@ IO.puts("")
 # Example 6: Using compiled pattern with take
 IO.puts("6. Using take with compiled pattern:")
 pattern = ~G/v[0-9]\.[0-9]/
-versions = RegSynth.take(pattern, 20)
+versions = Xeger.take(pattern, 20)
 IO.inspect(versions, label: "Versions")
 IO.puts("")
 

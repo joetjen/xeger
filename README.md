@@ -1,21 +1,21 @@
-# RegSynth
+# Xeger
 
-RegSynth generates strings that match a regex-like pattern.
+Xeger generates strings that match a regex-like pattern.
 
 Think: **regex → strings**.
 
 > This library focuses on a generatable subset of regex syntax (no backrefs/lookarounds).
 
-[![Hex.pm](https://img.shields.io/hexpm/v/regsynth.svg)](https://hex.pm/packages/regsynth)
-[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/regsynth)
-[![License](https://img.shields.io/hexpm/l/regsynth.svg)](LICENSE)
+[![Hex.pm](https://img.shields.io/hexpm/v/xeger.svg)](https://hex.pm/packages/xeger)
+[![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/xeger)
+[![License](https://img.shields.io/hexpm/l/xeger.svg)](LICENSE)
 
 ## Installation
 
 ```elixir
 def deps do
   [
-    {:regsynth, "~> 0.1.0"}
+    {:xeger, "~> 0.1.0"}
   ]
 end
 ```
@@ -23,10 +23,10 @@ end
 ## Quick example
 
 ```elixir
-RegSynth.take("a(b|c){2}\\d", 10)
+Xeger.take("a(b|c){2}\\d", 10)
 #=> ["abb0", "abb1", ...]
 
-RegSynth.stream("a*", max_repeat: 3)
+Xeger.stream("a*", max_repeat: 3)
 |> Enum.take(10)
 #=> ["", "a", "aa", "aaa", ...]
 
@@ -48,7 +48,7 @@ RegSynth.stream("a*", max_repeat: 3)
 * [Examples](guides/EXAMPLES.md) - worked, realistic patterns
 * [Changelog](CHANGELOG.md)
 
-Full API docs: [hexdocs.pm/regsynth](https://hexdocs.pm/regsynth).
+Full API docs: [hexdocs.pm/xeger](https://hexdocs.pm/xeger).
 
 ## License
 

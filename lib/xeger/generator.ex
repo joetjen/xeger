@@ -1,4 +1,4 @@
-defmodule RegSynth.Generator do
+defmodule Xeger.Generator do
   @moduledoc """
   Generator for string enumeration from AST patterns.
 
@@ -8,7 +8,7 @@ defmodule RegSynth.Generator do
   # printable ASCII
   @default_alphabet Enum.to_list(32..126)
 
-  @spec stream(RegSynth.AST.t(), keyword()) :: Enumerable.t()
+  @spec stream(Xeger.AST.t(), keyword()) :: Enumerable.t()
   def stream(ast, opts) do
     min = min_len(ast, opts)
     max = max_len(ast, opts)
