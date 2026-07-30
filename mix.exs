@@ -128,7 +128,8 @@ defmodule Xeger.MixProject do
           Xeger.Parser,
           Xeger.Parser.Actions,
           Xeger.Grammar,
-          Xeger.Generator
+          Xeger.Generator,
+          Xeger.Random
         ]
       ],
       source_ref: "v#{@version}",

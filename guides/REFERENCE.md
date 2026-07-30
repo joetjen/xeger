@@ -5,8 +5,10 @@ The complete syntax, options, and API reference for Xeger.
 ## Scope
 
 Xeger supports a **generatable subset** of regex syntax: everything that
-can be turned into a finite (or capped-infinite) list of matching strings.
-It deliberately does **not** support:
+can be turned into a stream of matching strings -- finite for a bounded
+pattern, and by default genuinely infinite (enumerated lazily) for one with
+an unbounded quantifier (`*`, `+`, `{m,}`) at the top level, unless you cap
+it with `:max_repeat`. It deliberately does **not** support:
 
 * Backreferences (`\1`, `\2`, ...) -- no fixed set of strings can represent
   "whatever the first group matched."
@@ -113,11 +115,11 @@ Usable standalone or inside a character class (`[\d_]`).
 
 | Syntax | Meaning |
 | --- | --- |
-| `a*` | zero or more (capped by `:max_repeat`) |
-| `a+` | one or more (capped by `:max_repeat`) |
+| `a*` | zero or more (unbounded unless capped by `:max_repeat`) |
+| `a+` | one or more (unbounded unless capped by `:max_repeat`) |
 | `a?` | zero or one |
 | `a{m}` | exactly `m` |
-| `a{m,}` | `m` or more (capped by `:max_repeat`) |
+| `a{m,}` | `m` or more (unbounded unless capped by `:max_repeat`) |
 | `a{m,n}` | between `m` and `n`, inclusive |
 
 `m`/`n` must be non-negative integers, and `n >= m` -- `Xeger.compile/2`
@@ -125,15 +127,23 @@ returns `{:error, message}` for a pattern like `a{3,2}`.
 
 ## Options
 
-Both accepted wherever a `keyword()` options list appears (`compile/2`,
-`stream/2`, `take/3`, and the pattern struct's own stored options, merged
-with whatever's passed at each call):
+Accepted wherever a `keyword()` options list appears (`compile/2`,
+`stream/2`, `take/3`, `random/2`, and the pattern struct's own stored
+options, merged with whatever's passed at each call):
 
-* `:max_repeat` (default `5`) -- the cap applied to every unbounded
-  quantifier (`*`, `+`, `{m,}`). Doesn't affect `{m}`/`{m,n}`, which already
-  have an explicit ceiling.
+* `:max_repeat` (default: none -- unbounded) -- caps every unbounded
+  quantifier (`*`, `+`, `{m,}`) at this many repeats. Without it, `stream/2`
+  on such a pattern is a genuinely infinite stream (fine to pipe into
+  `Enum.take/2`; don't pipe it into something that consumes a stream
+  eagerly, like `Enum.to_list/1` or `Enum.count/1`), and `random/2` draws
+  each repeat beyond the quantifier's minimum via a coin flip instead of a
+  uniform range (see [Random generation](#random-generation)). Doesn't
+  affect `{m}`/`{m,n}`, which already have an explicit ceiling.
 * `:alphabet` (default: printable ASCII, `Enum.to_list(32..126)`) -- the
   set of codepoints `.` and a negated class (`[^...]`) draw from.
+* `:seed` (default: none -- fresh randomness each call) -- `random/2`-only;
+  makes its output reproducible. Ignored by `compile/2`, `stream/2`, and
+  `take/3`.
 
 ## API reference
 
@@ -143,8 +153,29 @@ with whatever's passed at each call):
 | `Xeger.compile!(pattern, opts \\ [])` | `%Xeger.Pattern{}` | Same, raises `ArgumentError` on an invalid pattern. |
 | `Xeger.stream(pattern_or_compiled, opts \\ [])` | `Enumerable.t()` | Lazy; accepts either a binary pattern or a compiled `Pattern`. |
 | `Xeger.take(pattern_or_compiled, n, opts \\ [])` | `[binary()]` | `stream/2 \|> Enum.take(n)`. |
+| `Xeger.random(pattern_or_compiled, opts \\ [])` | `binary()` | One random match, without enumerating the rest. Raises `ArgumentError` if the pattern has no possible matches. |
 | `Xeger.matches?(pattern, string)` | `boolean()` | Wraps Elixir's own `Regex`; `false` (not an exception) on an invalid pattern. |
-| `Xeger.sigil_G(pattern, modifiers)` | `%Xeger.Pattern{}` (no modifier or `c`) or `Enumerable.t()` (`s`) | The `~G/pattern/[cs]` sigil. |
+| `Xeger.sigil_X(pattern, modifiers)` | `binary()` (no modifier), `%Xeger.Pattern{}` (`c`), or `Enumerable.t()` (`s`) | The `~X/pattern/[cs]` sigil. |
+
+## Random generation
+
+`Xeger.random/2` walks the pattern making one random choice at each node
+(which alternative, how many repeats, which codepoint) instead of
+enumerating every match and picking one -- so it stays fast even for a
+pattern whose full match set would be huge or infinite.
+
+For a bounded quantifier (`{m}`/`{m,n}`, or an unbounded one capped by
+`:max_repeat`), the repeat count is drawn **uniformly** from its valid
+range. For an unbounded quantifier with no `:max_repeat`, there's no finite
+range to draw from uniformly, so each repeat beyond the quantifier's own
+minimum is instead a coin flip (50/50) on whether to add another --
+unbounded in principle, geometrically distributed (so almost surely short)
+in practice.
+
+Pass `:seed` (any integer) for reproducible output: the same pattern,
+options, and seed always produce the same string. Without it, each call
+draws fresh randomness. Seeding is local to the call -- it doesn't affect
+`:rand` state elsewhere in your program.
 
 ## Ordering
 
@@ -164,6 +195,11 @@ but not necessarily lexicographic, order.
   `Enum.take/2` to cut off an expensive stream early -- the earlier lengths
   still have to be enumerated (even if ultimately discarded) to preserve
   shortlex order.
+* A repeated unit that can itself match the empty string (e.g. `(a?)*`)
+  produces the same string multiple times, once per redundant way of
+  splitting it across repeats -- harmless for `take/3` with a small `n`, but
+  a reason to prefer `:max_repeat` (or rewriting the pattern, e.g. `a*`
+  instead of `(a?)*`) over `Enum.take/2` on a large `n` for such patterns.
 
 ## How parsing works internally
 

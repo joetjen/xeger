@@ -1,5 +1,6 @@
 defmodule XegerTest do
   use ExUnit.Case, async: true
+  use ExUnitProperties
 
   test "enumerates simple literals" do
     assert Xeger.take("ab", 10) == ["ab"]
@@ -9,8 +10,39 @@ defmodule XegerTest do
     assert Xeger.take("a|b", 10) == ["a", "b"]
   end
 
-  test "repetition with cap" do
+  test "unbounded repetition is infinite by default" do
+    assert Xeger.take("a*", 8) ==
+             ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa"]
+  end
+
+  test "stream/2 on an uncapped unbounded pattern never ends" do
+    xs = Xeger.stream("a+") |> Enum.take(50)
+    assert length(xs) == 50
+    assert xs == Enum.map(1..50, &String.duplicate("a", &1))
+  end
+
+  test "repetition with explicit :max_repeat cap" do
     assert Xeger.take("a*", 6, max_repeat: 5) == ["", "a", "aa", "aaa", "aaaa", "aaaaa"]
+  end
+
+  test "a repeat body that can match empty terminates without :max_repeat" do
+    assert Xeger.take("(a?)*", 5) == ["", "", "a", "a", "a"]
+    assert Xeger.take("()*", 5) == ["", ""]
+  end
+
+  property ":max_repeat caps an unbounded quantifier at exactly that many repeats" do
+    check all(cap <- integer(0..8)) do
+      xs = Xeger.take("a*", 100, max_repeat: cap)
+      assert xs == Enum.map(0..cap, &String.duplicate("a", &1))
+    end
+  end
+
+  property "a nullable repeat body always terminates, regardless of :max_repeat" do
+    check all(n <- integer(1..15)) do
+      xs = Xeger.take("(a?)*", n)
+      assert is_list(xs)
+      assert Enum.all?(xs, &Xeger.matches?("(a?)*", &1))
+    end
   end
 
   test "class and digit" do
@@ -141,46 +173,78 @@ defmodule XegerTest do
     assert xs == [""]
   end
 
-  describe "sigil_G" do
-    import Xeger, only: [sigil_G: 2]
+  describe "random/2" do
+    test "returns a binary matching the pattern" do
+      for _ <- 1..100 do
+        assert Xeger.matches?("[a-z]{3,6}-\\d{2,4}", Xeger.random("[a-z]{3,6}-\\d{2,4}"))
+      end
+    end
 
-    test "creates a compiled pattern without modifiers" do
-      pattern = ~G/a+/
+    test "same seed produces the same output" do
+      assert Xeger.random("[a-z]{10}", seed: 42) == Xeger.random("[a-z]{10}", seed: 42)
+    end
+
+    test "different seeds usually produce different output" do
+      refute Xeger.random("[a-z]{10}", seed: 1) == Xeger.random("[a-z]{10}", seed: 2)
+    end
+
+    test "accepts a compiled pattern" do
+      pattern = Xeger.compile!("[a-c]")
+      assert Xeger.random(pattern) in ["a", "b", "c"]
+    end
+
+    test "raises for a pattern with no possible matches" do
+      assert_raise ArgumentError, fn -> Xeger.random("[^ -~]") end
+    end
+
+    property "with :max_repeat, the repeat count is uniform over min..max_repeat" do
+      check all(cap <- integer(0..6)) do
+        lengths = for _ <- 1..200, do: String.length(Xeger.random("a*", max_repeat: cap))
+        assert Enum.all?(lengths, &(&1 in 0..cap))
+        assert Enum.max(lengths) == cap
+      end
+    end
+
+    test "without :max_repeat, output length is unbounded but usually short" do
+      lengths = for _ <- 1..500, do: String.length(Xeger.random("a*"))
+      assert Enum.all?(lengths, &(&1 >= 0))
+      assert Enum.sum(lengths) / length(lengths) < 5
+    end
+  end
+
+  describe "sigil_X" do
+    import Xeger, only: [sigil_X: 2]
+
+    test "returns a random matching binary without modifiers" do
+      assert ~X/[a-c]/ in ["a", "b", "c"]
+    end
+
+    test "compiles a pattern with 'c' modifier" do
+      pattern = ~X/a+/c
       assert %Xeger.Pattern{} = pattern
       assert pattern.ast == {:rep, {:lit, "a"}, 1, :infty}
     end
 
-    test "creates a compiled pattern with 'c' modifier" do
-      pattern = ~G/a+/c
-      assert %Xeger.Pattern{} = pattern
-    end
-
     test "creates a stream with 's' modifier" do
-      stream = ~G/ab/s
+      stream = ~X/ab/s
       xs = Enum.take(stream, 2)
       assert xs == ["ab"]
     end
 
-    test "works with character classes" do
-      pattern = ~G/[a-c]/
-      xs = Xeger.stream(pattern) |> Enum.take(5)
-      assert xs == ["a", "b", "c"]
-    end
-
     test "works with alternation" do
-      stream = ~G/x|y/s
+      stream = ~X/x|y/s
       xs = Enum.take(stream, 5)
       assert xs == ["x", "y"]
     end
 
     test "works with repetition" do
-      stream = ~G/z*/s
+      stream = ~X/z*/s
       xs = Enum.take(stream, 3)
       assert xs == ["", "z", "zz"]
     end
 
-    test "works with complex patterns" do
-      pattern = ~G/[0-9]{2}/
+    test "works with complex patterns via 'c' modifier" do
+      pattern = ~X/[0-9]{2}/c
       xs = Xeger.take(pattern, 5)
       assert xs == ["00", "01", "02", "03", "04"]
     end
