@@ -16,7 +16,9 @@ defmodule Xeger do
   * Shorthands: `\\d` (0-9), `\\w` (A-Z a-z 0-9 _), `\\s` (whitespace)
   * Repetition: `*`, `+`, `?`, `{m}`, `{m,}`, `{m,n}`
 
-  Quantifiers that are unbounded (`*`, `+`, `{m,}`) are capped by `:max_repeat`.
+  Quantifiers that are unbounded (`*`, `+`, `{m,}`) are, by default, genuinely
+  unbounded: `stream/2` enumerates them lazily forever. Pass `:max_repeat` to
+  cap them instead.
 
   ## Ordering
 
@@ -25,7 +27,10 @@ defmodule Xeger do
 
   ## Options
 
-  * `:max_repeat` (default: `5`) - cap for unbounded repetition
+  * `:max_repeat` (default: none - unbounded) - caps `*`, `+`, `{m,}` at this
+    many repeats; without it, `stream/2` on such a pattern is an infinite
+    stream (safe to pipe into `Enum.take/2`, unsafe to pipe into anything
+    that consumes it eagerly, like `Enum.to_list/1` or `Enum.count/1`)
   * `:alphabet` (default: printable ASCII) - set used for `.` and negated classes
 
   ## Examples
@@ -33,8 +38,11 @@ defmodule Xeger do
       iex> Xeger.take("a(b|c){2}\\d", 6)
       ["abb0", "abb1", "abb2", "abb3", "abb4", "abb5"]
 
-      iex> Xeger.take("a*", 6, max_repeat: 5)
-      ["", "a", "aa", "aaa", "aaaa", "aaaaa"]
+      iex> Xeger.take("a*", 8)
+      ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa"]
+
+      iex> Xeger.take("a*", 6, max_repeat: 3)
+      ["", "a", "aa", "aaa"]
 
   """
 

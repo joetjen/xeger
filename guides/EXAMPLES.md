@@ -60,6 +60,18 @@ Xeger.stream("[a-z0-9]{3,8}@(gmail|yahoo|outlook)\\.com")
 #=> ["000@gmail.com", "000@yahoo.com", "001@gmail.com", "001@yahoo.com", "002@gmail.com"]
 ```
 
+## An unbounded pattern, streamed lazily
+
+```elixir
+Xeger.stream("[0-9a-f]+")
+|> Enum.take(5)
+#=> ["0", "1", "2", "3", "4"]
+```
+
+No `:max_repeat` here -- `[0-9a-f]+` is genuinely infinite, but `stream/2`
+enumerates it lazily one length at a time, so `Enum.take/2` only does as
+much work as it needs to.
+
 ## Reusing a compiled pattern with the `~G` sigil
 
 ```elixir

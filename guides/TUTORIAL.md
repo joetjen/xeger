@@ -31,17 +31,24 @@ Xeger.take("a|b|c", 5)
 
 ## 3. Repetition and the `:max_repeat` option
 
-`*`, `+`, and `{m,}` are unbounded on paper, but Xeger has to generate a
-finite list, so every unbounded quantifier is capped by the `:max_repeat`
-option (default `5`):
+`*`, `+`, and `{m,}` are unbounded on paper, and by default Xeger keeps them
+that way: `stream/2` (and `take/3`, which is just `stream/2 |> Enum.take/2`)
+enumerates them lazily, one length at a time, forever if you let it:
 
 ```elixir
 Xeger.take("a*", 10)
-#=> ["", "a", "aa", "aaa", "aaaa", "aaaaa"]
-# only 6 results: max_repeat defaults to 5, so "a*" tops out at 5 a's
+#=> ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa"]
+# take/3 only pulls the first 10 -- the underlying stream never actually ends
+```
 
-Xeger.take("a*", 10, max_repeat: 8)
-#=> ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa"]
+Pass `:max_repeat` to cap unbounded quantifiers at a fixed number of repeats
+instead, when you want the *pattern itself* to have only finitely many
+matches (e.g. so `Enum.to_list/1` or `Enum.count/1` on the stream terminates):
+
+```elixir
+Xeger.take("a*", 10, max_repeat: 3)
+#=> ["", "a", "aa", "aaa"]
+# now there really are only 4 matches -- take/3 can't return more than exist
 ```
 
 Bounded repetition (`{2,4}`, `{3}`) isn't affected by `:max_repeat` -- it
@@ -71,11 +78,12 @@ shorthands, and escapes.
 ## 5. Streaming instead of taking a fixed count
 
 `Xeger.stream/2` returns a lazy `Enumerable.t()` -- useful when a
-pattern's match count is unbounded (any `*`/`+`/`{m,}` at the top level) and
-you want to pull results incrementally instead of deciding a count up front:
+pattern's match count is unbounded (any `*`/`+`/`{m,}` at the top level,
+uncapped by `:max_repeat`) and you want to pull results incrementally
+instead of deciding a count up front:
 
 ```elixir
-Xeger.stream("a+", max_repeat: 100)
+Xeger.stream("a+")
 |> Enum.take(3)
 #=> ["a", "aa", "aaa"]
 ```

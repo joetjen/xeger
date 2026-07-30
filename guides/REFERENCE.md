@@ -5,8 +5,10 @@ The complete syntax, options, and API reference for Xeger.
 ## Scope
 
 Xeger supports a **generatable subset** of regex syntax: everything that
-can be turned into a finite (or capped-infinite) list of matching strings.
-It deliberately does **not** support:
+can be turned into a stream of matching strings -- finite for a bounded
+pattern, and by default genuinely infinite (enumerated lazily) for one with
+an unbounded quantifier (`*`, `+`, `{m,}`) at the top level, unless you cap
+it with `:max_repeat`. It deliberately does **not** support:
 
 * Backreferences (`\1`, `\2`, ...) -- no fixed set of strings can represent
   "whatever the first group matched."
@@ -113,11 +115,11 @@ Usable standalone or inside a character class (`[\d_]`).
 
 | Syntax | Meaning |
 | --- | --- |
-| `a*` | zero or more (capped by `:max_repeat`) |
-| `a+` | one or more (capped by `:max_repeat`) |
+| `a*` | zero or more (unbounded unless capped by `:max_repeat`) |
+| `a+` | one or more (unbounded unless capped by `:max_repeat`) |
 | `a?` | zero or one |
 | `a{m}` | exactly `m` |
-| `a{m,}` | `m` or more (capped by `:max_repeat`) |
+| `a{m,}` | `m` or more (unbounded unless capped by `:max_repeat`) |
 | `a{m,n}` | between `m` and `n`, inclusive |
 
 `m`/`n` must be non-negative integers, and `n >= m` -- `Xeger.compile/2`
@@ -129,9 +131,12 @@ Both accepted wherever a `keyword()` options list appears (`compile/2`,
 `stream/2`, `take/3`, and the pattern struct's own stored options, merged
 with whatever's passed at each call):
 
-* `:max_repeat` (default `5`) -- the cap applied to every unbounded
-  quantifier (`*`, `+`, `{m,}`). Doesn't affect `{m}`/`{m,n}`, which already
-  have an explicit ceiling.
+* `:max_repeat` (default: none -- unbounded) -- caps every unbounded
+  quantifier (`*`, `+`, `{m,}`) at this many repeats. Without it, `stream/2`
+  on such a pattern is a genuinely infinite stream (fine to pipe into
+  `Enum.take/2`; don't pipe it into something that consumes a stream
+  eagerly, like `Enum.to_list/1` or `Enum.count/1`). Doesn't affect
+  `{m}`/`{m,n}`, which already have an explicit ceiling.
 * `:alphabet` (default: printable ASCII, `Enum.to_list(32..126)`) -- the
   set of codepoints `.` and a negated class (`[^...]`) draw from.
 
@@ -164,6 +169,11 @@ but not necessarily lexicographic, order.
   `Enum.take/2` to cut off an expensive stream early -- the earlier lengths
   still have to be enumerated (even if ultimately discarded) to preserve
   shortlex order.
+* A repeated unit that can itself match the empty string (e.g. `(a?)*`)
+  produces the same string multiple times, once per redundant way of
+  splitting it across repeats -- harmless for `take/3` with a small `n`, but
+  a reason to prefer `:max_repeat` (or rewriting the pattern, e.g. `a*`
+  instead of `(a?)*`) over `Enum.take/2` on a large `n` for such patterns.
 
 ## How parsing works internally
 

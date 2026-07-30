@@ -1,5 +1,6 @@
 defmodule XegerTest do
   use ExUnit.Case, async: true
+  use ExUnitProperties
 
   test "enumerates simple literals" do
     assert Xeger.take("ab", 10) == ["ab"]
@@ -9,8 +10,39 @@ defmodule XegerTest do
     assert Xeger.take("a|b", 10) == ["a", "b"]
   end
 
-  test "repetition with cap" do
+  test "unbounded repetition is infinite by default" do
+    assert Xeger.take("a*", 8) ==
+             ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa"]
+  end
+
+  test "stream/2 on an uncapped unbounded pattern never ends" do
+    xs = Xeger.stream("a+") |> Enum.take(50)
+    assert length(xs) == 50
+    assert xs == Enum.map(1..50, &String.duplicate("a", &1))
+  end
+
+  test "repetition with explicit :max_repeat cap" do
     assert Xeger.take("a*", 6, max_repeat: 5) == ["", "a", "aa", "aaa", "aaaa", "aaaaa"]
+  end
+
+  test "a repeat body that can match empty terminates without :max_repeat" do
+    assert Xeger.take("(a?)*", 5) == ["", "", "a", "a", "a"]
+    assert Xeger.take("()*", 5) == ["", ""]
+  end
+
+  property ":max_repeat caps an unbounded quantifier at exactly that many repeats" do
+    check all(cap <- integer(0..8)) do
+      xs = Xeger.take("a*", 100, max_repeat: cap)
+      assert xs == Enum.map(0..cap, &String.duplicate("a", &1))
+    end
+  end
+
+  property "a nullable repeat body always terminates, regardless of :max_repeat" do
+    check all(n <- integer(1..15)) do
+      xs = Xeger.take("(a?)*", n)
+      assert is_list(xs)
+      assert Enum.all?(xs, &Xeger.matches?("(a?)*", &1))
+    end
   end
 
   test "class and digit" do

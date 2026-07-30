@@ -26,9 +26,10 @@ end
 Xeger.take("a(b|c){2}\\d", 10)
 #=> ["abb0", "abb1", ...]
 
-Xeger.stream("a*", max_repeat: 3)
+Xeger.stream("a*")
 |> Enum.take(10)
-#=> ["", "a", "aa", "aaa", ...]
+#=> ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa"]
+# unbounded quantifiers are infinite by default -- stream/2 is lazy either way
 
 # Or use the ~G sigil for a more idiomatic API
 ~G/a+/s |> Enum.take(5)
@@ -37,7 +38,7 @@ Xeger.stream("a*", max_repeat: 3)
 
 ## Options
 
-* `:max_repeat` - caps `*`, `+`, `{m,}` (default: `5`)
+* `:max_repeat` - caps `*`, `+`, `{m,}` at this many repeats (default: none -- unbounded)
 * `:alphabet` - codepoints used for `.` and negated classes (default: printable ASCII)
 
 ## Documentation

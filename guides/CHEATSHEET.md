@@ -18,11 +18,11 @@ explanation, or the [Tutorial](TUTORIAL.md) for a walkthrough.
 | `\d` | `0-9` |
 | `\w` | `0-9`, `A-Z`, `a-z`, `_` |
 | `\s` | space, `\t`, `\n`, `\r` |
-| `a*` | zero or more (capped by `:max_repeat`) |
-| `a+` | one or more (capped by `:max_repeat`) |
+| `a*` | zero or more (unbounded unless capped by `:max_repeat`) |
+| `a+` | one or more (unbounded unless capped by `:max_repeat`) |
 | `a?` | zero or one |
 | `a{m}` | exactly `m` |
-| `a{m,}` | `m` or more (capped by `:max_repeat`) |
+| `a{m,}` | `m` or more (unbounded unless capped by `:max_repeat`) |
 | `a{m,n}` | `m` to `n` |
 
 ## Not supported
@@ -43,7 +43,7 @@ plain literal characters everywhere else.
 
 | Option | Default | Affects |
 | --- | --- | --- |
-| `:max_repeat` | `5` | `*`, `+`, `{m,}` |
+| `:max_repeat` | none -- unbounded | `*`, `+`, `{m,}` |
 | `:alphabet` | printable ASCII (`32..126`) | `.`, `[^...]` |
 
 ## API quick reference
@@ -73,3 +73,6 @@ Xeger.matches?(pattern, string)       #=> boolean()
 * Enumeration order is shortlex (shortest first), not lexicographic overall
   -- don't expect `Enum.take/2` output to be alphabetically sorted across
   different lengths.
+* Without `:max_repeat`, `stream/2` on a pattern with a top-level `*`/`+`/
+  `{m,}` is a genuinely infinite stream -- safe with `Enum.take/2`, but
+  `Enum.to_list/1`, `Enum.count/1`, etc. will never return.
