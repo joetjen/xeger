@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Xeger.random/2` -- generate a single random string matching a pattern
+  directly, without enumerating the full match set (much cheaper than
+  `Xeger.take(pattern, 1)` for a pattern with a large or unbounded match
+  count). Accepts `:seed` for reproducible output and the existing
+  `:max_repeat`/`:alphabet` options; for an unbounded quantifier with no
+  `:max_repeat`, each repeat beyond the quantifier's minimum is a coin
+  flip on whether to continue (unbounded in principle, geometrically
+  short in practice) rather than a uniform draw, since there's no finite
+  range to draw uniformly from without a cap. Raises `ArgumentError` for
+  a pattern with no possible matches at all.
+- The `~X` sigil replaces `~G`: `~X/pattern/` now calls `random/1` and
+  returns one random matching string; `~X/pattern/c` and `~X/pattern/s`
+  still compile or stream, same as `~G` did.
+
 ### Changed
 
 - **`:max_repeat` now defaults to unbounded instead of `5`.** `*`, `+`, and
@@ -34,3 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`~> 0.1.0`, the small support library the generated parser calls at
   match time, published as its own independent Hex package) is the only
   new runtime dependency.
+
+### Fixed
+
+- `Xeger.stream/2`/`take/3` could take combinatorially long enumerating a
+  sequence of several fixed- or narrow-range parts at a large target
+  length (e.g. `Xeger.take("a+", 1, max_repeat: 50)` at length 25 -- up to
+  `C(49,24)` candidate splits, nearly all invalid). `distributions/3` now
+  prunes candidate splits by each part's own `max_len` instead of trying
+  every nonnegative composition of the remaining length -- this was
+  latent even before unbounded quantifiers became infinite by default.

@@ -26,20 +26,24 @@ end
 Xeger.take("a(b|c){2}\\d", 10)
 #=> ["abb0", "abb1", ...]
 
+Xeger.random("a(b|c){2}\\d")
+#=> "acb5" -- one random match, not the whole set; output varies each call
+
 Xeger.stream("a*")
 |> Enum.take(10)
 #=> ["", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa"]
 # unbounded quantifiers are infinite by default -- stream/2 is lazy either way
 
-# Or use the ~G sigil for a more idiomatic API
-~G/a+/s |> Enum.take(5)
-#=> ["a", "aa", "aaa", "aaaa", "aaaaa"]
+# Or use the ~X sigil for a more idiomatic API
+~X/a(b|c){2}\d/
+#=> "abc9" -- same as Xeger.random/1; add /c or /s for compile/stream instead
 ```
 
 ## Options
 
 * `:max_repeat` - caps `*`, `+`, `{m,}` at this many repeats (default: none -- unbounded)
 * `:alphabet` - codepoints used for `.` and negated classes (default: printable ASCII)
+* `:seed` - makes `Xeger.random/2`'s output reproducible (default: none -- fresh randomness each call)
 
 ## Documentation
 

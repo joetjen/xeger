@@ -72,12 +72,25 @@ No `:max_repeat` here -- `[0-9a-f]+` is genuinely infinite, but `stream/2`
 enumerates it lazily one length at a time, so `Enum.take/2` only does as
 much work as it needs to.
 
-## Reusing a compiled pattern with the `~G` sigil
+## One random test fixture value
 
 ```elixir
-import Xeger, only: [sigil_G: 2]
+Xeger.random("[A-Z]{2}-\\d{6}")
+#=> "QK-482017" -- a different match on every call
 
-~G/[A-Z]{2}\\d{6}/s |> Enum.take(5)
+Xeger.random("[A-Z]{2}-\\d{6}", seed: 123)
+#=> reproducible -- pin a seed in a test for a stable fixture value
+```
+
+`random/2` picks one match directly instead of enumerating, so it stays
+cheap even for a pattern like this one where the full match set is huge.
+
+## Reusing a compiled pattern with the `~X` sigil
+
+```elixir
+import Xeger, only: [sigil_X: 2]
+
+~X/[A-Z]{2}\\d{6}/s |> Enum.take(5)
 #=> ["AA000000", "AA000001", "AA000002", "AA000003", "AA000004"]
 ```
 

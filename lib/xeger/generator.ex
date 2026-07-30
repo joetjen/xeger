@@ -95,18 +95,8 @@ defmodule Xeger.Generator do
 
   defp gen_len({:class, items, neg?}, 1, opts) do
     alphabet = Keyword.get(opts, :alphabet, @default_alphabet)
-    allowed = class_to_codepoints(items)
 
-    cps =
-      if neg? do
-        MapSet.new(alphabet)
-        |> MapSet.difference(MapSet.new(allowed))
-        |> MapSet.to_list()
-      else
-        allowed
-      end
-
-    cps
+    Xeger.AST.class_codepoints(items, neg?, alphabet)
     |> Enum.sort()
     |> Stream.map(fn cp -> <<cp::utf8>> end)
   end
@@ -171,16 +161,6 @@ defmodule Xeger.Generator do
       :error when unit_min > 0 -> div(len, unit_min)
       :error -> len + 1
     end
-  end
-
-  defp class_to_codepoints(items) do
-    items
-    |> Enum.flat_map(fn
-      {:char, cp} -> [cp]
-      {:range, a, b} when a <= b -> Enum.to_list(a..b)
-      {:range, a, b} -> Enum.to_list(b..a)
-    end)
-    |> Enum.uniq()
   end
 
   # Each part's "add" (how much more than its own min it can take) is

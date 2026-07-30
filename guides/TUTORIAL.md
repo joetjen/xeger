@@ -112,21 +112,50 @@ with {:ok, pattern} <- Xeger.compile(user_supplied_pattern) do
 end
 ```
 
-## 7. The `~G` sigil
+## 7. A single random match
 
-For a more idiomatic, `~r`-like feel, import `sigil_G/2` and use the `~G`
-sigil instead of calling `compile!/2`/`stream/2` directly:
+`Xeger.random/2` picks one random match directly, without enumerating
+anything -- much cheaper than `Xeger.take(pattern, 1)` for a pattern with
+a large or unbounded match set:
 
 ```elixir
-import Xeger, only: [sigil_G: 2]
+Xeger.random("[a-z]{3}-\\d{4}")
+#=> "wkl-6224" -- a different match on every call
 
-~G/a+/                     # compiles, same as Xeger.compile!/1
-~G/a+/c                    # same, explicit "compile" modifier
-~G/a+/s |> Enum.take(5)    # "s" modifier: stream directly
+Xeger.random("[a-z]{3}-\\d{4}", seed: 42)
+#=> "dgo-7071" -- reproducible: same seed, same output, every time
+```
+
+For an unbounded quantifier (`*`, `+`, `{m,}`), `random/2` behaves a
+little differently from `take/3`/`stream/2`: without `:max_repeat` there's
+no finite range to draw a repeat count from uniformly, so each repeat
+beyond the pattern's minimum is instead a coin flip on whether to
+continue -- unbounded in principle, but almost surely short. Pass
+`:max_repeat` for a uniform draw over a fixed range instead, same as
+elsewhere:
+
+```elixir
+Xeger.random("a*", max_repeat: 4, seed: 1)
+#=> "a" -- uniformly one of "", "a", "aa", "aaa", "aaaa"
+```
+
+`:alphabet` behaves exactly as it does for `take/3`/`stream/2`.
+
+## 8. The `~X` sigil
+
+For a more idiomatic, `~r`-like feel, import `sigil_X/2` and use the `~X`
+sigil instead of calling `random/1`/`compile!/2`/`stream/2` directly:
+
+```elixir
+import Xeger, only: [sigil_X: 2]
+
+~X/a+/                     # one random match, same as Xeger.random/1
+~X/a+/c                    # compiles instead, same as Xeger.compile!/1
+~X/a+/s |> Enum.take(5)    # "s" modifier: stream directly
 #=> ["a", "aa", "aaa", "aaaa", "aaaaa"]
 ```
 
-## 8. Validating a string against a pattern
+## 9. Validating a string against a pattern
 
 `Xeger.matches?/2` is a convenience wrapper around Elixir's own `Regex`,
 handy in tests for checking that everything `take/3` produced really does
