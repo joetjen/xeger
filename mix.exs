@@ -1,7 +1,7 @@
 defmodule Xeger.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
   @source_url "https://github.com/joetjen/xeger"
 
   def project do
@@ -64,12 +64,12 @@ defmodule Xeger.MixProject do
       # banner comment to regenerate it). Only the generator needs to be
       # a dev dependency -- the checked-in generated module only calls
       # into the much smaller ichor_runtime below.
-      {:ichor, "~> 0.2.1", only: :dev, runtime: false},
+      {:ichor, "~> 0.2", only: :dev, runtime: false},
 
       # === RUNTIME ===
       # The support library the ichor.gen-generated parser
       # (lib/xeger/grammar.ex) actually calls at runtime.
-      {:ichor_runtime, "~> 0.1.0"}
+      {:ichor_runtime, "~> 0.2"}
     ]
   end
 
