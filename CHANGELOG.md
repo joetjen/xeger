@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bumped `ichor_runtime` to `~> 0.2` (from `~> 0.1.0`) and `ichor` (dev-only)
+  to `~> 0.3` (from `~> 0.2.1`), and regenerated `lib/xeger/grammar.ex` from
+  `priv/grammar/xeger.aether` against the new `mix ichor.gen`. `ichor_runtime`
+  0.2.0 changed raw capture data from a plain `%{name => value}` map to an
+  ordered `[{name, value}]` list (fixing sibling-capture evaluation order,
+  which previously depended on a plain map's own cross-OTP-version-unstable
+  iteration order); the regenerated grammar module reflects that shape.
+  `Xeger.Parser.Actions` was already immune -- every one of its multi-capture
+  rules (`piece`, `bound`, `group`, `range`) accesses named captures
+  explicitly rather than depending on iteration order, so this is a pure
+  dependency/codegen update with no change to Xeger's own behavior (42
+  tests, 3 properties, still green). Applications that also depend on
+  `ichor_runtime` directly need `~> 0.2` or newer.
+
 ## [0.1.0] - 2026-07-31
 
 ### Added

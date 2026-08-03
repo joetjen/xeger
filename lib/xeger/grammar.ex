@@ -498,7 +498,7 @@ defmodule Xeger.Grammar do
     def parse_expr__0(stream, pos, ref_stack, context) do
       case parse_rule__group(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{group: {:rule, :group, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, group: {:rule, :group, sub_captures}}
 
         _fail ->
           :fail
@@ -508,7 +508,7 @@ defmodule Xeger.Grammar do
     def parse_expr__1(stream, pos, ref_stack, context) do
       case parse_rule__char_class(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{char_class: {:rule, :char_class, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, char_class: {:rule, :char_class, sub_captures}}
 
         _fail ->
           :fail
@@ -517,8 +517,8 @@ defmodule Xeger.Grammar do
 
     def parse_expr__2(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DOT) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DOT: {:token, :DOT, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DOT: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DOT: {:token, :DOT, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DOT: capture}
         :fail -> :fail
       end
     end
@@ -526,10 +526,10 @@ defmodule Xeger.Grammar do
     def parse_expr__3(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :SHORTHAND_CLASS) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{SHORTHAND_CLASS: {:token, :SHORTHAND_CLASS, text}}}
+          {:ok, new_pos, ref_stack, SHORTHAND_CLASS: {:token, :SHORTHAND_CLASS, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{SHORTHAND_CLASS: capture}}
+          {:ok, new_pos, ref_stack, SHORTHAND_CLASS: capture}
 
         :fail ->
           :fail
@@ -539,10 +539,10 @@ defmodule Xeger.Grammar do
     def parse_expr__4(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :ESCAPED_CHAR) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{ESCAPED_CHAR: {:token, :ESCAPED_CHAR, text}}}
+          {:ok, new_pos, ref_stack, ESCAPED_CHAR: {:token, :ESCAPED_CHAR, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{ESCAPED_CHAR: capture}}
+          {:ok, new_pos, ref_stack, ESCAPED_CHAR: capture}
 
         :fail ->
           :fail
@@ -551,32 +551,32 @@ defmodule Xeger.Grammar do
 
     def parse_expr__5(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :CARET) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{CARET: {:token, :CARET, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{CARET: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, CARET: {:token, :CARET, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, CARET: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__6(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DASH) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DASH: {:token, :DASH, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DASH: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DASH: {:token, :DASH, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DASH: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__7(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :COMMA) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{COMMA: {:token, :COMMA, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{COMMA: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, COMMA: {:token, :COMMA, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, COMMA: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__8(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DIGIT) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DIGIT: {:token, :DIGIT, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DIGIT: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DIGIT: {:token, :DIGIT, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DIGIT: capture}
         :fail -> :fail
       end
     end
@@ -584,10 +584,10 @@ defmodule Xeger.Grammar do
     def parse_expr__9(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LITERAL_CHAR) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{LITERAL_CHAR: {:token, :LITERAL_CHAR, text}}}
+          {:ok, new_pos, ref_stack, LITERAL_CHAR: {:token, :LITERAL_CHAR, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{LITERAL_CHAR: capture}}
+          {:ok, new_pos, ref_stack, LITERAL_CHAR: capture}
 
         :fail ->
           :fail
@@ -617,16 +617,16 @@ defmodule Xeger.Grammar do
 
     def parse_expr__10(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LBRACE) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{LBRACE: {:token, :LBRACE, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{LBRACE: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, LBRACE: {:token, :LBRACE, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, LBRACE: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__13(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DIGIT) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DIGIT: {:token, :DIGIT, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DIGIT: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DIGIT: {:token, :DIGIT, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DIGIT: capture}
         :fail -> :fail
       end
     end
@@ -639,7 +639,7 @@ defmodule Xeger.Grammar do
       case (&parse_expr__12/4).(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, inner_caps} ->
           text = Parser.concat_text(stream, pos, new_pos)
-          {:ok, new_pos, new_ref_stack, Parser.merge_captures(inner_caps, %{min: {:text, text}})}
+          {:ok, new_pos, new_ref_stack, Parser.merge_captures(inner_caps, min: {:text, text})}
 
         _fail ->
           :fail
@@ -648,16 +648,16 @@ defmodule Xeger.Grammar do
 
     def parse_expr__16(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :COMMA) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{COMMA: {:token, :COMMA, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{COMMA: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, COMMA: {:token, :COMMA, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, COMMA: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__19(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DIGIT) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DIGIT: {:token, :DIGIT, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DIGIT: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DIGIT: {:token, :DIGIT, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DIGIT: capture}
         :fail -> :fail
       end
     end
@@ -670,7 +670,7 @@ defmodule Xeger.Grammar do
       case (&parse_expr__18/4).(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, inner_caps} ->
           text = Parser.concat_text(stream, pos, new_pos)
-          {:ok, new_pos, new_ref_stack, Parser.merge_captures(inner_caps, %{max: {:text, text}})}
+          {:ok, new_pos, new_ref_stack, Parser.merge_captures(inner_caps, max: {:text, text})}
 
         _fail ->
           :fail
@@ -692,8 +692,8 @@ defmodule Xeger.Grammar do
 
     def parse_expr__20(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :RBRACE) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{RBRACE: {:token, :RBRACE, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{RBRACE: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, RBRACE: {:token, :RBRACE, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, RBRACE: capture}
         :fail -> :fail
       end
     end
@@ -715,16 +715,16 @@ defmodule Xeger.Grammar do
 
     def parse_expr__22(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LPAREN) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{LPAREN: {:token, :LPAREN, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{LPAREN: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, LPAREN: {:token, :LPAREN, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, LPAREN: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__23(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :RPAREN) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{RPAREN: {:token, :RPAREN, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{RPAREN: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, RPAREN: {:token, :RPAREN, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, RPAREN: capture}
         :fail -> :fail
       end
     end
@@ -740,8 +740,8 @@ defmodule Xeger.Grammar do
 
     def parse_expr__25(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LPAREN) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{LPAREN: {:token, :LPAREN, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{LPAREN: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, LPAREN: {:token, :LPAREN, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, LPAREN: capture}
         :fail -> :fail
       end
     end
@@ -749,7 +749,7 @@ defmodule Xeger.Grammar do
     def parse_expr__26(stream, pos, ref_stack, context) do
       case parse_rule__expr(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{body: {:rule, :expr, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, body: {:rule, :expr, sub_captures}}
 
         _fail ->
           :fail
@@ -758,8 +758,8 @@ defmodule Xeger.Grammar do
 
     def parse_expr__27(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :RPAREN) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{RPAREN: {:token, :RPAREN, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{RPAREN: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, RPAREN: {:token, :RPAREN, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, RPAREN: capture}
         :fail -> :fail
       end
     end
@@ -779,94 +779,108 @@ defmodule Xeger.Grammar do
     end
 
     def parse_expr__28(stream, pos, ref_stack, context) do
-      case parse_rule__concat(stream, pos, ref_stack, context) do
+      case parse_rule__piece(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{concat: {:rule, :concat, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, piece: {:rule, :piece, sub_captures}}
 
         _fail ->
           :fail
       end
     end
 
-    def parse_expr__31(stream, pos, ref_stack, _context) do
-      case Parser.match_token(stream, pos, :PIPE) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{PIPE: {:token, :PIPE, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{PIPE: capture}}
-        :fail -> :fail
-      end
-    end
-
-    def parse_expr__32(stream, pos, ref_stack, context) do
-      case parse_rule__concat(stream, pos, ref_stack, context) do
-        {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{concat: {:rule, :concat, sub_captures}}}
-
-        _fail ->
-          :fail
-      end
-    end
-
-    def parse_expr__30(stream, pos, ref_stack, context) do
-      with {:ok, pos1, ref1, cap0} <- parse_expr__31(stream, pos, ref_stack, context),
-           {:ok, pos2, ref2, cap1} <- parse_expr__32(stream, pos1, ref1, context) do
-        {:ok, pos2, ref2, Parser.merge_captures(cap0, cap1)}
-      else
-        _fail -> :fail
-      end
+    def parse_rule__concat(stream, pos, ref_stack, context) do
+      Parser.plus(&parse_expr__28/4, stream, pos, ref_stack, context)
     end
 
     def parse_expr__29(stream, pos, ref_stack, context) do
-      Parser.star(&parse_expr__30/4, stream, pos, ref_stack, context)
+      case parse_rule__concat(stream, pos, ref_stack, context) do
+        {:ok, new_pos, new_ref_stack, sub_captures} ->
+          {:ok, new_pos, new_ref_stack, concat: {:rule, :concat, sub_captures}}
+
+        _fail ->
+          :fail
+      end
     end
 
-    def parse_rule__expr(stream, pos, ref_stack, context) do
-      with {:ok, pos1, ref1, cap0} <- parse_expr__28(stream, pos, ref_stack, context),
-           {:ok, pos2, ref2, cap1} <- parse_expr__29(stream, pos1, ref1, context) do
-        {:ok, pos2, ref2, Parser.merge_captures(cap0, cap1)}
-      else
-        _fail -> :fail
+    def parse_expr__32(stream, pos, ref_stack, _context) do
+      case Parser.match_token(stream, pos, :PIPE) do
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, PIPE: {:token, :PIPE, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, PIPE: capture}
+        :fail -> :fail
       end
     end
 
     def parse_expr__33(stream, pos, ref_stack, context) do
-      case parse_rule__class_atom(stream, pos, ref_stack, context) do
+      case parse_rule__concat(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{from: {:rule, :class_atom, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, concat: {:rule, :concat, sub_captures}}
 
         _fail ->
           :fail
       end
     end
 
-    def parse_expr__34(stream, pos, ref_stack, _context) do
+    def parse_expr__31(stream, pos, ref_stack, context) do
+      with {:ok, pos1, ref1, cap0} <- parse_expr__32(stream, pos, ref_stack, context),
+           {:ok, pos2, ref2, cap1} <- parse_expr__33(stream, pos1, ref1, context) do
+        {:ok, pos2, ref2, Parser.merge_captures(cap0, cap1)}
+      else
+        _fail -> :fail
+      end
+    end
+
+    def parse_expr__30(stream, pos, ref_stack, context) do
+      Parser.star(&parse_expr__31/4, stream, pos, ref_stack, context)
+    end
+
+    def parse_rule__expr(stream, pos, ref_stack, context) do
+      with {:ok, pos1, ref1, cap0} <- parse_expr__29(stream, pos, ref_stack, context),
+           {:ok, pos2, ref2, cap1} <- parse_expr__30(stream, pos1, ref1, context) do
+        {:ok, pos2, ref2, Parser.merge_captures(cap0, cap1)}
+      else
+        _fail -> :fail
+      end
+    end
+
+    def parse_expr__34(stream, pos, ref_stack, context) do
+      case parse_rule__class_atom(stream, pos, ref_stack, context) do
+        {:ok, new_pos, new_ref_stack, sub_captures} ->
+          {:ok, new_pos, new_ref_stack, from: {:rule, :class_atom, sub_captures}}
+
+        _fail ->
+          :fail
+      end
+    end
+
+    def parse_expr__35(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DASH) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DASH: {:token, :DASH, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DASH: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DASH: {:token, :DASH, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DASH: capture}
         :fail -> :fail
       end
     end
 
-    def parse_expr__36(stream, pos, ref_stack, _context) do
+    def parse_expr__37(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :RBRACKET) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{RBRACKET: {:token, :RBRACKET, text}}}
+          {:ok, new_pos, ref_stack, RBRACKET: {:token, :RBRACKET, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{RBRACKET: capture}}
+          {:ok, new_pos, ref_stack, RBRACKET: capture}
 
         :fail ->
           :fail
       end
     end
 
-    def parse_expr__35(stream, pos, ref_stack, context) do
-      Parser.not_pred(&parse_expr__36/4, stream, pos, ref_stack, context)
+    def parse_expr__36(stream, pos, ref_stack, context) do
+      Parser.not_pred(&parse_expr__37/4, stream, pos, ref_stack, context)
     end
 
-    def parse_expr__37(stream, pos, ref_stack, context) do
+    def parse_expr__38(stream, pos, ref_stack, context) do
       case parse_rule__class_atom(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{to: {:rule, :class_atom, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, to: {:rule, :class_atom, sub_captures}}
 
         _fail ->
           :fail
@@ -874,10 +888,10 @@ defmodule Xeger.Grammar do
     end
 
     def parse_rule__range(stream, pos, ref_stack, context) do
-      with {:ok, pos1, ref1, cap0} <- parse_expr__33(stream, pos, ref_stack, context),
-           {:ok, pos2, ref2, cap1} <- parse_expr__34(stream, pos1, ref1, context),
-           {:ok, pos3, ref3, cap2} <- parse_expr__35(stream, pos2, ref2, context),
-           {:ok, pos4, ref4, cap3} <- parse_expr__37(stream, pos3, ref3, context) do
+      with {:ok, pos1, ref1, cap0} <- parse_expr__34(stream, pos, ref_stack, context),
+           {:ok, pos2, ref2, cap1} <- parse_expr__35(stream, pos1, ref1, context),
+           {:ok, pos3, ref3, cap2} <- parse_expr__36(stream, pos2, ref2, context),
+           {:ok, pos4, ref4, cap3} <- parse_expr__38(stream, pos3, ref3, context) do
         {:ok, pos4, ref4,
          Parser.merge_captures(
            cap0,
@@ -888,27 +902,13 @@ defmodule Xeger.Grammar do
       end
     end
 
-    def parse_expr__38(stream, pos, ref_stack, context) do
-      case parse_rule__piece(stream, pos, ref_stack, context) do
-        {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{piece: {:rule, :piece, sub_captures}}}
-
-        _fail ->
-          :fail
-      end
-    end
-
-    def parse_rule__concat(stream, pos, ref_stack, context) do
-      Parser.plus(&parse_expr__38/4, stream, pos, ref_stack, context)
-    end
-
     def parse_expr__39(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LBRACKET) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{LBRACKET: {:token, :LBRACKET, text}}}
+          {:ok, new_pos, ref_stack, LBRACKET: {:token, :LBRACKET, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{LBRACKET: capture}}
+          {:ok, new_pos, ref_stack, LBRACKET: capture}
 
         :fail ->
           :fail
@@ -917,8 +917,8 @@ defmodule Xeger.Grammar do
 
     def parse_expr__41(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :CARET) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{CARET: {:token, :CARET, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{CARET: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, CARET: {:token, :CARET, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, CARET: capture}
         :fail -> :fail
       end
     end
@@ -930,7 +930,7 @@ defmodule Xeger.Grammar do
     def parse_expr__43(stream, pos, ref_stack, context) do
       case parse_rule__class_item(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{class_item: {:rule, :class_item, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, class_item: {:rule, :class_item, sub_captures}}
 
         _fail ->
           :fail
@@ -944,10 +944,10 @@ defmodule Xeger.Grammar do
     def parse_expr__44(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :RBRACKET) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{RBRACKET: {:token, :RBRACKET, text}}}
+          {:ok, new_pos, ref_stack, RBRACKET: {:token, :RBRACKET, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{RBRACKET: capture}}
+          {:ok, new_pos, ref_stack, RBRACKET: capture}
 
         :fail ->
           :fail
@@ -971,16 +971,16 @@ defmodule Xeger.Grammar do
 
     def parse_expr__45(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :STAR) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{STAR: {:token, :STAR, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{STAR: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, STAR: {:token, :STAR, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, STAR: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__46(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :PLUS) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{PLUS: {:token, :PLUS, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{PLUS: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, PLUS: {:token, :PLUS, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, PLUS: capture}
         :fail -> :fail
       end
     end
@@ -988,10 +988,10 @@ defmodule Xeger.Grammar do
     def parse_expr__47(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :QUESTION) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{QUESTION: {:token, :QUESTION, text}}}
+          {:ok, new_pos, ref_stack, QUESTION: {:token, :QUESTION, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{QUESTION: capture}}
+          {:ok, new_pos, ref_stack, QUESTION: capture}
 
         :fail ->
           :fail
@@ -1001,7 +1001,7 @@ defmodule Xeger.Grammar do
     def parse_expr__48(stream, pos, ref_stack, context) do
       case parse_rule__bound(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{bound: {:rule, :bound, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, bound: {:rule, :bound, sub_captures}}
 
         _fail ->
           :fail
@@ -1021,7 +1021,7 @@ defmodule Xeger.Grammar do
     def parse_expr__49(stream, pos, ref_stack, context) do
       case parse_rule__atom(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{atom: {:rule, :atom, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, atom: {:rule, :atom, sub_captures}}
 
         _fail ->
           :fail
@@ -1031,7 +1031,7 @@ defmodule Xeger.Grammar do
     def parse_expr__51(stream, pos, ref_stack, context) do
       case parse_rule__quant(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{quant: {:rule, :quant, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, quant: {:rule, :quant, sub_captures}}
 
         _fail ->
           :fail
@@ -1054,7 +1054,7 @@ defmodule Xeger.Grammar do
     def parse_expr__52(stream, pos, ref_stack, context) do
       case parse_rule__range(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{range: {:rule, :range, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, range: {:rule, :range, sub_captures}}
 
         _fail ->
           :fail
@@ -1064,10 +1064,10 @@ defmodule Xeger.Grammar do
     def parse_expr__53(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :SHORTHAND_CLASS) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{SHORTHAND_CLASS: {:token, :SHORTHAND_CLASS, text}}}
+          {:ok, new_pos, ref_stack, SHORTHAND_CLASS: {:token, :SHORTHAND_CLASS, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{SHORTHAND_CLASS: capture}}
+          {:ok, new_pos, ref_stack, SHORTHAND_CLASS: capture}
 
         :fail ->
           :fail
@@ -1077,7 +1077,7 @@ defmodule Xeger.Grammar do
     def parse_expr__54(stream, pos, ref_stack, context) do
       case parse_rule__class_atom(stream, pos, ref_stack, context) do
         {:ok, new_pos, new_ref_stack, sub_captures} ->
-          {:ok, new_pos, new_ref_stack, %{class_atom: {:rule, :class_atom, sub_captures}}}
+          {:ok, new_pos, new_ref_stack, class_atom: {:rule, :class_atom, sub_captures}}
 
         _fail ->
           :fail
@@ -1097,10 +1097,10 @@ defmodule Xeger.Grammar do
     def parse_expr__55(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :ESCAPED_CHAR) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{ESCAPED_CHAR: {:token, :ESCAPED_CHAR, text}}}
+          {:ok, new_pos, ref_stack, ESCAPED_CHAR: {:token, :ESCAPED_CHAR, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{ESCAPED_CHAR: capture}}
+          {:ok, new_pos, ref_stack, ESCAPED_CHAR: capture}
 
         :fail ->
           :fail
@@ -1109,32 +1109,32 @@ defmodule Xeger.Grammar do
 
     def parse_expr__56(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :CARET) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{CARET: {:token, :CARET, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{CARET: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, CARET: {:token, :CARET, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, CARET: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__57(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DASH) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DASH: {:token, :DASH, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DASH: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DASH: {:token, :DASH, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DASH: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__58(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :COMMA) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{COMMA: {:token, :COMMA, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{COMMA: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, COMMA: {:token, :COMMA, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, COMMA: capture}
         :fail -> :fail
       end
     end
 
     def parse_expr__59(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :DIGIT) do
-        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, %{DIGIT: {:token, :DIGIT, text}}}
-        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, %{DIGIT: capture}}
+        {:ok, new_pos, text, nil} -> {:ok, new_pos, ref_stack, DIGIT: {:token, :DIGIT, text}}
+        {:ok, new_pos, _text, capture} -> {:ok, new_pos, ref_stack, DIGIT: capture}
         :fail -> :fail
       end
     end
@@ -1142,10 +1142,10 @@ defmodule Xeger.Grammar do
     def parse_expr__60(stream, pos, ref_stack, _context) do
       case Parser.match_token(stream, pos, :LITERAL_CHAR) do
         {:ok, new_pos, text, nil} ->
-          {:ok, new_pos, ref_stack, %{LITERAL_CHAR: {:token, :LITERAL_CHAR, text}}}
+          {:ok, new_pos, ref_stack, LITERAL_CHAR: {:token, :LITERAL_CHAR, text}}
 
         {:ok, new_pos, _text, capture} ->
-          {:ok, new_pos, ref_stack, %{LITERAL_CHAR: capture}}
+          {:ok, new_pos, ref_stack, LITERAL_CHAR: capture}
 
         :fail ->
           :fail
@@ -1182,7 +1182,8 @@ defmodule Xeger.Grammar do
     )
 
     @doc "Matches `input` against the grammar's root rule, requiring the entire (tokenized) input to be consumed. A bare recognizer -- no `Ichor.Actions` involved. `context` is read-only and only ever consulted by a `Grammar.IR.Custom` `@native(...)` node, if the grammar has one."
-    @spec parse(String.t(), term()) :: {:ok, non_neg_integer(), map()} | {:error, Ichor.Error.t()}
+    @spec parse(String.t(), term()) ::
+            {:ok, non_neg_integer(), Ichor.Capture.raw_captures()} | {:error, Ichor.Error.t()}
     def parse(input, context \\ nil) do
       with {:ok, tokens} <- tokenize(input, context) do
         stream = List.to_tuple(tokens)
@@ -1215,9 +1216,9 @@ defmodule Xeger.Grammar do
                atom: MapSet.new([]),
                bound: MapSet.new([:DIGIT]),
                group: MapSet.new([]),
+               concat: MapSet.new([:piece]),
                expr: MapSet.new([:PIPE, :concat]),
                range: MapSet.new([]),
-               concat: MapSet.new([:piece]),
                char_class: MapSet.new([:class_item]),
                quant: MapSet.new([]),
                piece: MapSet.new([]),
@@ -1250,9 +1251,9 @@ defmodule Xeger.Grammar do
                    atom: MapSet.new([]),
                    bound: MapSet.new([:DIGIT]),
                    group: MapSet.new([]),
+                   concat: MapSet.new([:piece]),
                    expr: MapSet.new([:PIPE, :concat]),
                    range: MapSet.new([]),
-                   concat: MapSet.new([:piece]),
                    char_class: MapSet.new([:class_item]),
                    quant: MapSet.new([]),
                    piece: MapSet.new([]),
