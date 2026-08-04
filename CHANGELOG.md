@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Published API docs built from `main` to GitHub Pages
+  (<https://joetjen.github.io/xeger/>) via `.github/workflows/docs.yml`,
+  alongside the existing hexdocs.pm docs for released versions. Linked from
+  the README.
+
 ## [0.1.1] - 2026-08-03
 
 ### Changed

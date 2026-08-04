@@ -8,6 +8,7 @@ Think: **regex → strings**.
 
 [![Hex.pm](https://img.shields.io/hexpm/v/xeger.svg)](https://hex.pm/packages/xeger)
 [![Documentation](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/xeger)
+[![Docs (main)](https://img.shields.io/badge/docs-main-blue.svg)](https://joetjen.github.io/xeger/)
 [![License](https://img.shields.io/hexpm/l/xeger.svg)](LICENSE)
 
 ## Installation
@@ -53,7 +54,8 @@ Xeger.stream("a*")
 * [Examples](guides/EXAMPLES.md) - worked, realistic patterns
 * [Changelog](CHANGELOG.md)
 
-Full API docs: [hexdocs.pm/xeger](https://hexdocs.pm/xeger).
+Full API docs: [hexdocs.pm/xeger](https://hexdocs.pm/xeger) (latest release) or
+[joetjen.github.io/xeger](https://joetjen.github.io/xeger/) (built from `main` on every push).
 
 ## License
 
